@@ -7,6 +7,7 @@ import com.google.models.Album;
 import com.google.models.Singer;
 import com.google.models.Song;
 import java.sql.SQLException;
+import java.util.List;
 import javax.sql.DataSource;
 
 public class Main {
@@ -41,6 +42,17 @@ public class Main {
       songsDao.insert(new Song(albumId3, 3, "I Knew You Were Magic", "{\"genre\": \"pop\"}"));
       songsDao.insert(new Song(albumId5, 1, "Fight Story", "{\"genre\": \"metal\"}"));
 
+      // Displays the inserted data
+      for (Singer singer : singersDao.findAll()) {
+        System.out.println(singer);
+        for (Album album : albumsDao.findBySinger(singer.getSingerId())) {
+          System.out.println(album);
+          for (Song song : songsDao.findByAlbum(album.getId())) {
+            System.out.println(song);
+          }
+        }
+        System.out.println();
+      }
     } catch (SQLException e) {
       e.printStackTrace();
     }

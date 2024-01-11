@@ -4,6 +4,12 @@ import java.util.Objects;
 
 public class Album {
   public static class Id {
+
+    @Override
+    public String toString() {
+      return "(" + singerId + ", " + albumId + ')';
+    }
+
     private final int singerId;
     private final long albumId;
 
@@ -35,14 +41,6 @@ public class Album {
     @Override
     public int hashCode() {
       return Objects.hash(singerId, albumId);
-    }
-
-    @Override
-    public String toString() {
-      return "Id{" +
-          "singerId=" + singerId +
-          ", albumId=" + albumId +
-          '}';
     }
   }
 

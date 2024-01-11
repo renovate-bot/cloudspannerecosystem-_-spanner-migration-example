@@ -45,11 +45,7 @@ public class Song {
 
     @Override
     public String toString() {
-      return "Id{" +
-          "singerId=" + singerId +
-          ", albumId=" + albumId +
-          ", songId=" + songId +
-          '}';
+      return "(" + singerId + ", " + albumId + ", " + songId + ')';
     }
   }
 

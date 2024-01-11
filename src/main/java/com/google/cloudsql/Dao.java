@@ -22,7 +22,7 @@ public class Dao {
     }
 
     public int insert(Singer singer) throws SQLException {
-      try(Connection connection = dataSource.getConnection();
+      try (Connection connection = dataSource.getConnection();
           PreparedStatement preparedStatement = connection.prepareStatement(
               "INSERT INTO singers (singer_id, first_name, last_name) VALUES (DEFAULT, ?, ?) RETURNING singer_id")) {
         preparedStatement.setString(1, singer.getFirstName());
@@ -38,21 +38,10 @@ public class Dao {
       }
     }
 
-    public int update(Singer singer) throws SQLException {
-      try (Connection connection = dataSource.getConnection();
-          PreparedStatement preparedStatement = connection.prepareStatement(
-              "UPDATE singers SET first_name = ?, last_name = ? WHERE singer_id = ?")) {
-        preparedStatement.setString(1, singer.getFirstName());
-        preparedStatement.setString(2, singer.getLastName());
-        preparedStatement.setLong(3, singer.getSingerId());
-
-        return preparedStatement.executeUpdate();
-      }
-    }
-
     public List<Singer> findAll() throws SQLException {
       try (Connection connection = dataSource.getConnection();
-          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM singers");
+          PreparedStatement preparedStatement = connection.prepareStatement(
+              "SELECT singer_id, first_name, last_name FROM singers");
           ResultSet resultSet = preparedStatement.executeQuery()) {
         List<Singer> result = new ArrayList<>();
 
@@ -71,7 +60,7 @@ public class Dao {
     public int deleteAll() throws SQLException {
       try (Connection connection = dataSource.getConnection();
           PreparedStatement preparedStatement = connection.prepareStatement(
-          "DELETE FROM singers")) {
+              "DELETE FROM singers")) {
         return preparedStatement.executeUpdate();
       }
     }
@@ -88,7 +77,7 @@ public class Dao {
     public Album.Id insert(Album album) throws SQLException {
       try (Connection connection = dataSource.getConnection();
           PreparedStatement preparedStatement = connection.prepareStatement(
-          "INSERT INTO albums (singer_id, album_id, album_title) VALUES (?, ?, ?)")) {
+              "INSERT INTO albums (singer_id, album_id, album_title) VALUES (?, ?, ?)")) {
         preparedStatement.setInt(1, album.getId().getSingerId());
         preparedStatement.setLong(2, album.getId().getAlbumId());
         preparedStatement.setString(3, album.getAlbumTitle());
@@ -99,40 +88,31 @@ public class Dao {
       }
     }
 
-    public int update(Album album) throws SQLException {
+    public List<Album> findBySinger(int singerId) throws SQLException {
       try (Connection connection = dataSource.getConnection();
           PreparedStatement preparedStatement = connection.prepareStatement(
-              "UPDATE albums SET album_title = ? WHERE singer_id = ? AND album_id = ?")) {
-        preparedStatement.setString(1, album.getAlbumTitle());
-        preparedStatement.setInt(2, album.getId().getSingerId());
-        preparedStatement.setLong(3, album.getId().getAlbumId());
+              "SELECT album_id, album_title FROM albums WHERE singer_id = ?")) {
+        preparedStatement.setInt(1, singerId);
 
-        return preparedStatement.executeUpdate();
-      }
-    }
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+          List<Album> result = new ArrayList<>();
 
-    public List<Album> findAll() throws SQLException {
-      try (Connection connection = dataSource.getConnection();
-          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM albums");
-          ResultSet resultSet = preparedStatement.executeQuery()) {
-        List<Album> result = new ArrayList<>();
+          while (resultSet.next()) {
+            long albumId = resultSet.getLong("album_id");
+            String albumTitle = resultSet.getString("album_title");
 
-        while (resultSet.next()) {
-          int singerId = resultSet.getInt("singer_id");
-          long albumId = resultSet.getLong("album_id");
-          String albumTitle = resultSet.getString("album_title");
+            result.add(new Album(singerId, albumId, albumTitle));
+          }
 
-          result.add(new Album(singerId, albumId, albumTitle));
+          return result;
         }
-
-        return result;
       }
     }
 
     public int deleteAll() throws SQLException {
       try (Connection connection = dataSource.getConnection();
           PreparedStatement preparedStatement = connection.prepareStatement(
-          "DELETE FROM albums")) {
+              "DELETE FROM albums")) {
         return preparedStatement.executeUpdate();
       }
     }
@@ -149,7 +129,7 @@ public class Dao {
     public Song.Id insert(Song song) throws SQLException {
       try (Connection connection = dataSource.getConnection();
           PreparedStatement preparedStatement = connection.prepareStatement(
-          "INSERT INTO songs (singer_id, album_id, song_id, song_name, song_data) VALUES (?, ?, ?, ?, CAST(? AS JSON))")) {
+              "INSERT INTO songs (singer_id, album_id, song_id, song_name, song_data) VALUES (?, ?, ?, ?, CAST(? AS JSON))")) {
         preparedStatement.setInt(1, song.getId().getSingerId());
         preparedStatement.setLong(2, song.getId().getAlbumId());
         preparedStatement.setLong(3, song.getId().getSongId());
@@ -162,44 +142,33 @@ public class Dao {
       }
     }
 
-    public int update(Song song) throws SQLException {
+    public List<Song> findByAlbum(Album.Id albumId) throws SQLException {
       try (Connection connection = dataSource.getConnection();
           PreparedStatement preparedStatement = connection.prepareStatement(
-              "UPDATE songs SET song_name = ?, song_data = ? WHERE singer_id = ? AND album_id = ? AND song_id = ?")) {
-        preparedStatement.setString(1, song.getSongName());
-        preparedStatement.setString(2, song.getSongData());
-        preparedStatement.setInt(3, song.getId().getSingerId());
-        preparedStatement.setLong(4, song.getId().getAlbumId());
-        preparedStatement.setLong(5, song.getId().getSongId());
+              "SELECT song_id, song_name, song_data FROM songs WHERE singer_id = ? AND album_id = ?")) {
+        preparedStatement.setInt(1, albumId.getSingerId());
+        preparedStatement.setLong(2, albumId.getAlbumId());
 
-        return preparedStatement.executeUpdate();
-      }
-    }
+        try (ResultSet resultSet = preparedStatement.executeQuery()) {
+          List<Song> result = new ArrayList<>();
 
-    public List<Song> findAll() throws SQLException {
-      try (Connection connection = dataSource.getConnection();
-          PreparedStatement preparedStatement = connection.prepareStatement("SELECT * FROM songs");
-          ResultSet resultSet = preparedStatement.executeQuery()) {
-        List<Song> result = new ArrayList<>();
+          while (resultSet.next()) {
+            long songId = resultSet.getLong("song_id");
+            String songName = resultSet.getString("song_name");
+            String songData = resultSet.getString("song_data");
 
-        while (resultSet.next()) {
-          int singerId = resultSet.getInt("singer_id");
-          long albumId = resultSet.getLong("album_id");
-          long songId = resultSet.getLong("song_id");
-          String songName = resultSet.getString("song_name");
-          String songData = resultSet.getString("song_data");
+            result.add(new Song(albumId, songId, songName, songData));
+          }
 
-          result.add(new Song(new Album.Id(singerId, albumId), songId, songName, songData));
+          return result;
         }
-
-        return result;
       }
     }
 
     public int deleteAll() throws SQLException {
       try (Connection connection = dataSource.getConnection();
           PreparedStatement preparedStatement = connection.prepareStatement(
-          "DELETE FROM songs")) {
+              "DELETE FROM songs")) {
         return preparedStatement.executeUpdate();
       }
     }
