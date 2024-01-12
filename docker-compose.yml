@@ -3,11 +3,22 @@ version: '3'
 services:
   pgadapter:
     image: gcr.io/cloud-spanner-pg-adapter/pgadapter
+    env_file:
+      - .env
     ports:
       - "5432:5432"
     volumes:
       - $HOME/.config/gcloud/application_default_credentials.json:/credentials.json:ro
     command: ["/bin/bash", "/home/pgadapter/startup.sh", "-p", "${SPANNER_PROJECT}", "-i", "${SPANNER_INSTANCE}", "-d", "${SPANNER_DATABASE}", "-c", "/credentials.json", "-x"]
   cloudsql:
-
+    build:
+      context: .
+    image: clousql
+    env_file:
+      - .env
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
+    volumes:
+      - $HOME/.config/gcloud/application_default_credentials.json:/credentials.json:ro
+    command: ["java", "-jar", "app.jar", "cloudsql"]
 
