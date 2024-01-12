@@ -1,22 +1,25 @@
-package com.google.cloudsql;
+package com.google;
 
-import com.google.cloudsql.Dao.Albums;
-import com.google.cloudsql.Dao.Singers;
-import com.google.cloudsql.Dao.Songs;
+import com.google.cloudsql.CloudSQLDataSource;
+import com.google.dao.AlbumsDao;
+import com.google.dao.SingersDao;
+import com.google.dao.SongsDao;
 import com.google.models.Album;
 import com.google.models.Singer;
 import com.google.models.Song;
+import com.google.spanner.SpannerDataSource;
 import java.sql.SQLException;
-import java.util.List;
 import javax.sql.DataSource;
 
 public class Main {
+
   public static void main(String[] args) {
     try {
-      DataSource dataSource = PostgreSQLDataSource.createConnectionPool();
-      Singers singersDao = new Singers(dataSource);
-      Albums albumsDao = new Albums(dataSource);
-      Songs songsDao = new Songs(dataSource);
+      DataSource dataSource = args[0].equals("spanner") ? SpannerDataSource.createConnectionPool()
+          : CloudSQLDataSource.createConnectionPool();
+      SingersDao singersDao = new SingersDao(dataSource);
+      AlbumsDao albumsDao = new AlbumsDao(dataSource);
+      SongsDao songsDao = new SongsDao(dataSource);
 
       // Empties the current database
       songsDao.deleteAll();

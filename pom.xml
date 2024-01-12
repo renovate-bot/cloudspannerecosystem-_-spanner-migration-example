@@ -21,15 +21,28 @@
     </dependency>
 
     <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>5.1.0</version>
+    </dependency>
+
+    <!-- Only required for connecting to CloudSQL -->
+    <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>postgres-socket-factory</artifactId>
       <version>1.15.1</version>
     </dependency>
 
+    <!-- Only required for connecting to Spanner through PGAdapter -->
     <dependency>
-      <groupId>com.zaxxer</groupId>
-      <artifactId>HikariCP</artifactId>
-      <version>5.1.0</version>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-spanner-pgadapter</artifactId>
+      <version>0.23.1</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>10.0.1</version>
     </dependency>
   </dependencies>
 
@@ -55,7 +68,7 @@
           </execution>
         </executions>
         <configuration>
-          <mainClass>com.google.cloudsql.Main</mainClass>
+          <mainClass>com.google.Main</mainClass>
         </configuration>
       </plugin>
     </plugins>
