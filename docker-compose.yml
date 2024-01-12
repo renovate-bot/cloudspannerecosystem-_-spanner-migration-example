@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  pgadapter:
+    image: gcr.io/cloud-spanner-pg-adapter/pgadapter
+    ports:
+    - "5432:5432"
+    volumes:
+    - $HOME/.config/gcloud/application_default_credentials.json:/credentials.json:ro
+    command: ["/bin/bash", "/home/pgadapter/startup.sh", "-p", "${SPANNER_PROJECT}", "-i", "${SPANNER_INSTANCE}", "-d", "${SPANNER_DATABASE}", "-c", "/credentials.json", "-x"]
