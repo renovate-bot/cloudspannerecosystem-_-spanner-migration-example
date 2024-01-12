@@ -5,7 +5,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import javax.sql.DataSource;
 
 public class SpannerDataSource {
-  private static final String DATABASE_NAME = System.getenv("DB_NAME");
+  private static final String DATABASE_NAME = System.getenv("SPANNER_DATABASE");
   public static DataSource createConnectionPool() {
     try {
       // Make sure the PG JDBC driver is loaded.

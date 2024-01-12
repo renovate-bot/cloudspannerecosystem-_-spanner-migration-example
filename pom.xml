@@ -32,18 +32,6 @@
       <artifactId>postgres-socket-factory</artifactId>
       <version>1.15.1</version>
     </dependency>
-
-    <!-- Only required for connecting to Spanner through PGAdapter -->
-    <dependency>
-      <groupId>com.google.cloud</groupId>
-      <artifactId>google-cloud-spanner-pgadapter</artifactId>
-      <version>0.23.1</version>
-    </dependency>
-    <dependency>
-      <groupId>com.google.guava</groupId>
-      <artifactId>guava</artifactId>
-      <version>10.0.1</version>
-    </dependency>
   </dependencies>
 
   <build>

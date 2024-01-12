@@ -9,10 +9,10 @@ public class CloudSQLDataSource {
   // secure - consider a more secure solution such as
   // Cloud Secret Manager (https://cloud.google.com/secret-manager) to help
   // keep secrets safe.
-  private static final String DATABASE_NAME = System.getenv("DB_NAME");
-  private static final String INSTANCE_CONNECTION_NAME = System.getenv("INSTANCE_CONNECTION_NAME");
-  private static final String USERNAME = System.getenv("DB_USERNAME");
-  private static final String PASSWORD = System.getenv("DB_PASSWORD");
+  private static final String DATABASE_NAME = System.getenv("CLOUDSQL_DATABASE");
+  private static final String INSTANCE_CONNECTION_NAME = System.getenv("CLOUDSQL_INSTANCE_CONNECTION_NAME");
+  private static final String USERNAME = System.getenv("CLOUDSQL_USERNAME");
+  private static final String PASSWORD = System.getenv("CLOUDSQL_PASSWORD");
 
   public static DataSource createConnectionPool() {
     HikariConfig config = new HikariConfig();
