@@ -27,8 +27,8 @@ public class Main {
       singersDao.deleteAll();
 
       // Inserts a couple of singers
-      int singerId1 = singersDao.insert(new Singer("Marc", "Richards"));
-      int singerId2 = singersDao.insert(new Singer("Catalina", "Smith"));
+      long singerId1 = singersDao.insert(new Singer("Marc", "Richards"));
+      long singerId2 = singersDao.insert(new Singer("Catalina", "Smith"));
 
       // Inserts a couple of albums
       Album.Id albumId1 = albumsDao.insert(new Album(singerId1, 1, "Total Junk"));

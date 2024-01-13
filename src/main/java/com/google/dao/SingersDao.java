@@ -17,7 +17,7 @@ public class SingersDao {
     this.dataSource = dataSource;
   }
 
-  public int insert(Singer singer) throws SQLException {
+  public long insert(Singer singer) throws SQLException {
     try (Connection connection = dataSource.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(
             "INSERT INTO singers (singer_id, first_name, last_name) VALUES (DEFAULT, ?, ?) RETURNING singer_id")) {
@@ -26,7 +26,7 @@ public class SingersDao {
 
       try (ResultSet resultSet = preparedStatement.executeQuery()) {
         if (resultSet.next()) {
-          return resultSet.getInt("singer_id");
+          return resultSet.getLong("singer_id");
         } else {
           throw new SQLException("Creation failed for " + singer);
         }
@@ -42,7 +42,7 @@ public class SingersDao {
       List<Singer> result = new ArrayList<>();
 
       while (resultSet.next()) {
-        int singerId = resultSet.getInt("singer_id");
+        long singerId = resultSet.getLong("singer_id");
         String firstName = resultSet.getString("first_name");
         String lastName = resultSet.getString("last_name");
 
