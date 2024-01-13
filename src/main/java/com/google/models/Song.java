@@ -4,17 +4,17 @@ import java.util.Objects;
 
 public class Song {
   public static class Id {
-    private final int singerId;
+    private final long singerId;
     private final long albumId;
     private final long songId;
 
-    public Id(int singerId, long albumId, long songId) {
+    public Id(long singerId, long albumId, long songId) {
       this.singerId = singerId;
       this.albumId = albumId;
       this.songId = songId;
     }
 
-    public int getSingerId() {
+    public long getSingerId() {
       return singerId;
     }
 

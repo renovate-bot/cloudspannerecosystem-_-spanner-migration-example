@@ -21,7 +21,7 @@ public class SongsDao {
     try (Connection connection = dataSource.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(
             "INSERT INTO songs (singer_id, album_id, song_id, song_name, song_data) VALUES (?, ?, ?, ?, CAST(? AS JSON))")) {
-      preparedStatement.setInt(1, song.getId().getSingerId());
+      preparedStatement.setLong(1, song.getId().getSingerId());
       preparedStatement.setLong(2, song.getId().getAlbumId());
       preparedStatement.setLong(3, song.getId().getSongId());
       preparedStatement.setString(4, song.getSongName());
@@ -37,7 +37,7 @@ public class SongsDao {
     try (Connection connection = dataSource.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(
             "SELECT song_id, song_name, song_data FROM songs WHERE singer_id = ? AND album_id = ?")) {
-      preparedStatement.setInt(1, albumId.getSingerId());
+      preparedStatement.setLong(1, albumId.getSingerId());
       preparedStatement.setLong(2, albumId.getAlbumId());
 
       try (ResultSet resultSet = preparedStatement.executeQuery()) {

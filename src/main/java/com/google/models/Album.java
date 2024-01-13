@@ -10,15 +10,15 @@ public class Album {
       return "(" + singerId + ", " + albumId + ')';
     }
 
-    private final int singerId;
+    private final long singerId;
     private final long albumId;
 
-    public Id(int singerId, long albumId) {
+    public Id(long singerId, long albumId) {
       this.singerId = singerId;
       this.albumId = albumId;
     }
 
-    public int getSingerId() {
+    public long getSingerId() {
       return singerId;
     }
 
@@ -47,7 +47,7 @@ public class Album {
   private final Id id;
   private final String albumTitle;
 
-  public Album(int singerId, long albumId, String albumTitle) {
+  public Album(long singerId, long albumId, String albumTitle) {
     this.id = new Id(singerId, albumId);
     this.albumTitle = albumTitle;
   }

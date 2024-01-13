@@ -21,7 +21,7 @@ public class AlbumsDao {
     try (Connection connection = dataSource.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(
             "INSERT INTO albums (singer_id, album_id, album_title) VALUES (?, ?, ?)")) {
-      preparedStatement.setInt(1, album.getId().getSingerId());
+      preparedStatement.setLong(1, album.getId().getSingerId());
       preparedStatement.setLong(2, album.getId().getAlbumId());
       preparedStatement.setString(3, album.getAlbumTitle());
 
@@ -31,11 +31,11 @@ public class AlbumsDao {
     }
   }
 
-  public List<Album> findBySinger(int singerId) throws SQLException {
+  public List<Album> findBySinger(long singerId) throws SQLException {
     try (Connection connection = dataSource.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement(
             "SELECT album_id, album_title FROM albums WHERE singer_id = ?")) {
-      preparedStatement.setInt(1, singerId);
+      preparedStatement.setLong(1, singerId);
 
       try (ResultSet resultSet = preparedStatement.executeQuery()) {
         List<Album> result = new ArrayList<>();

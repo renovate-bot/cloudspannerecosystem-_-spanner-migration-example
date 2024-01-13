@@ -3,7 +3,7 @@ package com.google.models;
 import java.util.Objects;
 
 public class Singer {
-  private final int singerId;
+  private final long singerId;
   private final String firstName;
   private final String lastName;
 
@@ -11,13 +11,13 @@ public class Singer {
     this(-1, firstName, lastName);
   }
 
-  public Singer(int singerId, String firstName, String lastName) {
+  public Singer(long singerId, String firstName, String lastName) {
     this.singerId = singerId;
     this.firstName = firstName;
     this.lastName = lastName;
   }
 
-  public int getSingerId() {
+  public long getSingerId() {
     return singerId;
   }
 
