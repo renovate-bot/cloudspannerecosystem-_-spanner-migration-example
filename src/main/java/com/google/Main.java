@@ -9,17 +9,18 @@ import com.google.models.Singer;
 import com.google.models.Song;
 import com.google.spanner.SpannerDataSource;
 import java.sql.SQLException;
+import java.util.Arrays;
 import javax.sql.DataSource;
 
 public class Main {
 
   public static void main(String[] args) {
     try {
-      DataSource dataSource = args[0].equals("spanner") ? SpannerDataSource.createConnectionPool()
-          : CloudSQLDataSource.createConnectionPool();
-      SingersDao singersDao = new SingersDao(dataSource);
-      AlbumsDao albumsDao = new AlbumsDao(dataSource);
-      SongsDao songsDao = new SongsDao(dataSource);
+      DatabaseChoice databaseChoice = parseDatabaseChoice(args);
+      DataSource dataSource = dataSourceFrom(databaseChoice);
+      SingersDao singersDao = new SingersDao(databaseChoice, dataSource);
+      AlbumsDao albumsDao = new AlbumsDao(databaseChoice, dataSource);
+      SongsDao songsDao = new SongsDao(databaseChoice, dataSource);
 
       // Empties the current database
       songsDao.deleteAll();
@@ -59,6 +60,25 @@ public class Main {
     } catch (SQLException e) {
       e.printStackTrace();
     }
+  }
+
+  private static DatabaseChoice parseDatabaseChoice(String[] args) {
+    if (args.length == 0) {
+      System.err.println("Please specify one of " + Arrays.toString(DatabaseChoice.values()));
+      System.exit(1);
+    }
+    return DatabaseChoice.valueOf(args[0].toUpperCase());
+  }
+
+  private static DataSource dataSourceFrom(DatabaseChoice databaseChoice) {
+    switch (databaseChoice) {
+      case CLOUDSQL: return CloudSQLDataSource.createConnectionPool();
+      case SPANNER: return SpannerDataSource.createConnectionPool();
+      default:
+        System.out.println("Unsupported database choice " + databaseChoice);
+        System.exit(1);
+    }
+    return null;
   }
 }
 

@@ -1,5 +1,6 @@
 package com.google.dao;
 
+import com.google.DatabaseChoice;
 import com.google.models.Singer;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -11,9 +12,11 @@ import javax.sql.DataSource;
 
 public class SingersDao {
 
+  private final DatabaseChoice databaseChoice;
   private final DataSource dataSource;
 
-  public SingersDao(DataSource dataSource) {
+  public SingersDao(DatabaseChoice databaseChoice, DataSource dataSource) {
+    this.databaseChoice = databaseChoice;
     this.dataSource = dataSource;
   }
 

@@ -1,5 +1,6 @@
 package com.google.dao;
 
+import com.google.DatabaseChoice;
 import com.google.models.Album;
 import com.google.models.Song;
 import java.sql.Connection;
@@ -11,16 +12,29 @@ import java.util.List;
 import javax.sql.DataSource;
 
 public class SongsDao {
+
+  private final DatabaseChoice databaseChoice;
   private final DataSource dataSource;
 
-  public SongsDao(DataSource dataSource) {
+  public SongsDao(DatabaseChoice databaseChoice, DataSource dataSource) {
+    this.databaseChoice = databaseChoice;
     this.dataSource = dataSource;
   }
 
   public Song.Id insert(Song song) throws SQLException {
+    String query = null;
+    switch (databaseChoice) {
+      case CLOUDSQL:
+        query = "INSERT INTO songs (singer_id, album_id, song_id, song_name, song_data) VALUES (?, ?, ?, ?, CAST(? AS JSON))";
+        break;
+      case SPANNER:
+        // Spanner supports the JSONB type instead of JSON
+        query = "INSERT INTO songs (singer_id, album_id, song_id, song_name, song_data) VALUES (?, ?, ?, ?, CAST(? AS JSONB))";
+        break;
+    }
+
     try (Connection connection = dataSource.getConnection();
-        PreparedStatement preparedStatement = connection.prepareStatement(
-            "INSERT INTO songs (singer_id, album_id, song_id, song_name, song_data) VALUES (?, ?, ?, ?, CAST(? AS JSON))")) {
+        PreparedStatement preparedStatement = connection.prepareStatement(query)) {
       preparedStatement.setLong(1, song.getId().getSingerId());
       preparedStatement.setLong(2, song.getId().getAlbumId());
       preparedStatement.setLong(3, song.getId().getSongId());
