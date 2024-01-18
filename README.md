@@ -2,7 +2,7 @@
 
 Application to exemplify migration from a PostgreSQL database to Spanner (using the PostgreSQL dialect).
 
-This application is divided into two self-contained projects, to better exemplify the changes necessary in each step. The projects are:
+This application is divided into three self-contained projects, to better exemplify the changes necessary in each step. The projects are:
 
 * [before-migration](before-migration): contains an application that uses CloudSQL PostgreSQL.
 * [during-migration](during-migration): contains an application that can use either CloudSQL PostgreSQL and Spanner PostgreSQL.
