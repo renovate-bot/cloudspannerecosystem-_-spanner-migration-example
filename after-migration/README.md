@@ -1,4 +1,4 @@
-# PostgreSQL to Spanner Migration Example - During Migration to Spanner
+# PostgreSQL to Spanner Migration Example - After Migrating to Spanner
 
 This application exemplifies the application updated to work with Spanner PostgreSQL only. The only changes made here are that we cleaned up the code from [during-migration](../during-migration) to remove CloudSQL specific application logic.
 
