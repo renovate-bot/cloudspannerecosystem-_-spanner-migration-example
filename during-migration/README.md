@@ -60,8 +60,11 @@ You can then start the application as follows:
 
 ```shell
 # Starts the application connecting to Spanner PostgreSQL
-docker-compose up spanner
+docker-compose up pgadapter spanner
 
 # Otherwise, you can start the original application connecting to CloudSQL PostgreSQL
+# Stop previous containers
+docker-compose stop pgadapter spanner
+# Start the application with CloudSQL
 docker-compose up cloudsql
 ```
