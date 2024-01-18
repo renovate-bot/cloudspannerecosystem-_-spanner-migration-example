@@ -14,5 +14,5 @@ You can then start the application as follows:
 
 ```shell
 # Starts the application connecting to Spanner PostgreSQL
-docker-compose up spanner
+docker-compose up pgadapter spanner
 ```
