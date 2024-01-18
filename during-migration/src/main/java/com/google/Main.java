@@ -1,8 +1,5 @@
 package com.google;
 
-import com.google.cloudsql.CloudSQLDataSource;
-import com.google.dao.Dao;
-import com.google.spanner.SpannerDataSource;
 import java.util.Arrays;
 import javax.sql.DataSource;
 

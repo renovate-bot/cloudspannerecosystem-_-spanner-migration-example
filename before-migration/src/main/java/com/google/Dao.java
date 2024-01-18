@@ -1,8 +1,5 @@
-package com.google.dao;
+package com.google;
 
-import static com.google.DatabaseChoice.SPANNER;
-
-import com.google.DatabaseChoice;
 import com.google.models.Album;
 import com.google.models.Singer;
 import com.google.models.Song;
@@ -18,14 +15,10 @@ public class Dao {
 
   private static final String INSERT_SINGER_QUERY = "INSERT INTO singers (singer_id, first_name, last_name) VALUES (DEFAULT, ?, ?) RETURNING singer_id";
   private static final String INSERT_ALBUM_QUERY = "INSERT INTO albums (singer_id, album_id, album_title) VALUES (?, DEFAULT, ?) RETURNING album_id";
-  private static final String CLOUDSQL_INSERT_SONG_QUERY = "INSERT INTO songs (singer_id, album_id, song_id, song_name, song_data) VALUES (?, ?, DEFAULT, ?, CAST(? AS JSON)) RETURNING song_id";
-  // Spanner supports the JSONB type instead of JSON
-  private static final String SPANNER_INSERT_SONG_QUERY = "INSERT INTO songs (singer_id, album_id, song_id, song_name, song_data) VALUES (?, ?, DEFAULT, ?, CAST(? AS JSONB)) RETURNING song_id";
-  private final DatabaseChoice databaseChoice;
+  private static final String INSERT_SONG_QUERY = "INSERT INTO songs (singer_id, album_id, song_id, song_name, song_data) VALUES (?, ?, DEFAULT, ?, CAST(? AS JSON)) RETURNING song_id";
   private final DataSource dataSource;
 
-  public Dao(DatabaseChoice databaseChoice, DataSource dataSource) {
-    this.databaseChoice = databaseChoice;
+  public Dao(DataSource dataSource) {
     this.dataSource = dataSource;
   }
 
@@ -42,15 +35,15 @@ public class Dao {
       connection.setAutoCommit(false);
 
       try {
-        long singerId = insertSinger(connection, singer);
+        int singerId = insertSinger(connection, singer);
 
         List<Album> albums = new ArrayList<>();
         for (Album album : singer.getAlbums()) {
-          long albumId = insertAlbum(connection, singerId, album);
+          int albumId = insertAlbum(connection, singerId, album);
 
           List<Song> songs = new ArrayList<>();
           for (Song song : album.getSongs()) {
-            long songId = insertSong(connection, singerId, albumId, song);
+            int songId = insertSong(connection, singerId, albumId, song);
             songs.add(new Song(singerId, albumId, songId, song.getSongName(), song.getSongData()));
           }
 
@@ -69,14 +62,14 @@ public class Dao {
     }
   }
 
-  private long insertSinger(Connection connection, Singer singer) throws SQLException {
+  private int insertSinger(Connection connection, Singer singer) throws SQLException {
     try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SINGER_QUERY)) {
       preparedStatement.setString(1, singer.getFirstName());
       preparedStatement.setString(2, singer.getLastName());
 
       try (ResultSet resultSet = preparedStatement.executeQuery()) {
         if (resultSet.next()) {
-          return resultSet.getLong("singer_id");
+          return resultSet.getInt("singer_id");
         } else {
           throw new SQLException("Creation failed for " + singer);
         }
@@ -84,14 +77,14 @@ public class Dao {
     }
   }
 
-  public long insertAlbum(Connection connection, long singerId, Album album) throws SQLException {
+  public int insertAlbum(Connection connection, int singerId, Album album) throws SQLException {
     try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ALBUM_QUERY)) {
-      preparedStatement.setLong(1, singerId);
+      preparedStatement.setInt(1, singerId);
       preparedStatement.setString(2, album.getAlbumTitle());
 
       try (ResultSet resultSet = preparedStatement.executeQuery()) {
         if (resultSet.next()) {
-          return resultSet.getLong("album_id");
+          return resultSet.getInt("album_id");
         } else {
           throw new SQLException("Creation failed for " + album);
         }
@@ -99,18 +92,17 @@ public class Dao {
     }
   }
 
-  public long insertSong(Connection connection, long singerId, long albumId, Song song)
+  public int insertSong(Connection connection, int singerId, int albumId, Song song)
       throws SQLException {
-    try (PreparedStatement preparedStatement = connection.prepareStatement(
-        databaseChoice == SPANNER ? SPANNER_INSERT_SONG_QUERY : CLOUDSQL_INSERT_SONG_QUERY)) {
-      preparedStatement.setLong(1, singerId);
+    try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SONG_QUERY)) {
+      preparedStatement.setInt(1, singerId);
       preparedStatement.setLong(2, albumId);
       preparedStatement.setString(3, song.getSongName());
       preparedStatement.setString(4, song.getSongData());
 
       try (ResultSet resultSet = preparedStatement.executeQuery()) {
         if (resultSet.next()) {
-          return resultSet.getLong("song_id");
+          return resultSet.getInt("song_id");
         } else {
           throw new SQLException("Creation failed for " + song);
         }

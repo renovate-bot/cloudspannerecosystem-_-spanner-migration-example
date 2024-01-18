@@ -1,4 +1,4 @@
-package com.google.cloudsql;
+package com.google;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  cloudsql:
+    build:
+      context: .
+    image: cloudsql
+    env_file:
+    - .env
+    environment:
+    - GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
+    volumes:
+    - $HOME/.config/gcloud/application_default_credentials.json:/credentials.json:ro
+    command: [ "java", "-jar", "app.jar", "cloudsql" ]

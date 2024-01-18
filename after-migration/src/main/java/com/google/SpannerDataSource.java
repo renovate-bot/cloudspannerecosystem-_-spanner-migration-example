@@ -1,4 +1,4 @@
-package com.google.spanner;
+package com.google;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;

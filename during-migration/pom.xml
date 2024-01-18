@@ -3,21 +3,20 @@
   <modelVersion>4.0.0</modelVersion>
  
   <groupId>com.google</groupId>
-  <artifactId>spanner-migration-example</artifactId>
+  <artifactId>during-migration-example</artifactId>
   <version>0.0.1-SNAPSHOT</version>
  
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
-    <postgresql.version>42.5.4</postgresql.version>
   </properties>
  
   <dependencies>
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>${postgresql.version}</version>
+      <version>42.5.4</version>
     </dependency>
 
     <dependency>
@@ -26,7 +25,7 @@
       <version>5.1.0</version>
     </dependency>
 
-    <!-- Only required for connecting to CloudSQL -->
+    <!-- Required for connecting to CloudSQL -->
     <dependency>
       <groupId>com.google.cloud.sql</groupId>
       <artifactId>postgres-socket-factory</artifactId>
@@ -63,26 +62,26 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <executions>
-            <execution>
-                <phase>package</phase>
-                <goals>
-                    <goal>single</goal>
-                </goals>
-                <configuration>
-                    <archive>
-                    <manifest>
-                        <mainClass>
-                            com.google.Main
-                        </mainClass>
-                    </manifest>
-                    </archive>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                </configuration>
-            </execution>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+            <configuration>
+              <archive>
+                <manifest>
+                  <mainClass>
+                    com.google.Main
+                  </mainClass>
+                </manifest>
+              </archive>
+              <descriptorRefs>
+                <descriptorRef>jar-with-dependencies</descriptorRef>
+              </descriptorRefs>
+            </configuration>
+          </execution>
         </executions>
-    </plugin>
+      </plugin>
     </plugins>
   </build>
 </project>
