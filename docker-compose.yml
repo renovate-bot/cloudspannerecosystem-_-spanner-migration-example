@@ -1,13 +1,7 @@
 version: '3'
 
-# Make sure to update your volumes mapping accordingly:
-#
-# In Cloud Shell the credentials JSON file can be found in
-# - $CLOUDSDK_CONFIG/application_default_credentials.json:/credentials.json:ro
-#
-# If you are running in a local setup, then credentials might live in
-# - $HOME/.config/gcloud/application_default_credentials.json:/credentials.json:ro
-#
+# This is set up to run in an authenticated docker environment. See instructions here: https://cloud.google.com/artifact-registry/docs/docker/authentication
+# If you are executing this in Google Cloud Shell, you can skip the configuration above.
 
 services:
   pgadapter:
@@ -16,19 +10,13 @@ services:
     - "5432:5432"
     env_file:
     - .env
-    volumes:
-    - $CLOUDSDK_CONFIG/application_default_credentials.json:/credentials.json:ro
-    command: [ "/bin/bash", "/home/pgadapter/startup.sh", "-p", "${SPANNER_PROJECT}", "-i", "${SPANNER_INSTANCE}", "-d", "${SPANNER_DATABASE}", "-c", "/credentials.json", "-x" ]
+    command: [ "/bin/bash", "/home/pgadapter/startup.sh", "-p", "${SPANNER_PROJECT}", "-i", "${SPANNER_INSTANCE}", "-d", "${SPANNER_DATABASE}", "-x" ]
   app-cloudsql:
     build:
       context: .
     image: app-cloudsql
     env_file:
     - .env
-    environment:
-    - GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
-    volumes:
-    - $CLOUDSDK_CONFIG/application_default_credentials.json:/credentials.json:ro
     command: [ "java", "-jar", "app.jar", "cloudsql" ]
   app-spanner:
     build:
@@ -38,8 +26,4 @@ services:
     - pgadapter
     env_file:
     - .env
-    environment:
-    - GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
-    volumes:
-    - $CLOUDSDK_CONFIG/application_default_credentials.json:/credentials.json:ro
     command: [ "./wait-for-it.sh", "${PGADAPTER_HOST}:${PGADAPTER_PORT}", "--", "java", "-jar", "app.jar", "spanner" ]
