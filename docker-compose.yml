@@ -1,14 +1,23 @@
 version: '3'
 
+# Make sure to update your volumes mapping accordingly:
+#
+# In Cloud Shell the credentials JSON file can be found in
+# - $CLOUDSDK_CONFIG/application_default_credentials.json:/credentials.json:ro
+#
+# If you are running in a local setup, then credentials might live in
+# - $HOME/.config/gcloud/application_default_credentials.json:/credentials.json:ro
+#
+
 services:
   pgadapter:
     image: gcr.io/cloud-spanner-pg-adapter/pgadapter
     ports:
-    - "${PGADAPTER_PORT}:${PGADAPTER_PORT}"
+    - "5432:5432"
     env_file:
     - .env
     volumes:
-    - $HOME/.config/gcloud/application_default_credentials.json:/credentials.json:ro
+    - $CLOUDSDK_CONFIG/application_default_credentials.json:/credentials.json:ro
     command: [ "/bin/bash", "/home/pgadapter/startup.sh", "-p", "${SPANNER_PROJECT}", "-i", "${SPANNER_INSTANCE}", "-d", "${SPANNER_DATABASE}", "-c", "/credentials.json", "-x" ]
   app-cloudsql:
     build:
@@ -19,7 +28,7 @@ services:
     environment:
     - GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
     volumes:
-    - $HOME/.config/gcloud/application_default_credentials.json:/credentials.json:ro
+    - $CLOUDSDK_CONFIG/application_default_credentials.json:/credentials.json:ro
     command: [ "java", "-jar", "app.jar", "cloudsql" ]
   app-spanner:
     build:
@@ -32,5 +41,5 @@ services:
     environment:
     - GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
     volumes:
-    - $HOME/.config/gcloud/application_default_credentials.json:/credentials.json:ro
+    - $CLOUDSDK_CONFIG/application_default_credentials.json:/credentials.json:ro
     command: [ "./wait-for-it.sh", "${PGADAPTER_HOST}:${PGADAPTER_PORT}", "--", "java", "-jar", "app.jar", "spanner" ]
