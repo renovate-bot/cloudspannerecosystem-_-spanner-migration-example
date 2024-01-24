@@ -1,6 +1,6 @@
-DROP TABLE songs;
-DROP TABLE albums;
-DROP TABLE singers;
+DROP TABLE IF EXISTS songs;
+DROP TABLE IF EXISTS albums;
+DROP TABLE IF EXISTS singers;
 
 -- When converting to Spanner:
 --   * Table does not contain a primary key column, one must be added
