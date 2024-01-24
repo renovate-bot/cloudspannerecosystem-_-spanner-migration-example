@@ -10,7 +10,7 @@ services:
     volumes:
     - $HOME/.config/gcloud/application_default_credentials.json:/credentials.json:ro
     command: [ "/bin/bash", "/home/pgadapter/startup.sh", "-p", "${SPANNER_PROJECT}", "-i", "${SPANNER_INSTANCE}", "-d", "${SPANNER_DATABASE}", "-c", "/credentials.json", "-x" ]
-  cloudsql:
+  cloudsql-app:
     build:
       context: .
     image: cloudsql
@@ -21,7 +21,7 @@ services:
     volumes:
     - $HOME/.config/gcloud/application_default_credentials.json:/credentials.json:ro
     command: [ "java", "-jar", "app.jar", "cloudsql" ]
-  spanner:
+  spanner-app:
     build:
       context: .
     image: spanner
