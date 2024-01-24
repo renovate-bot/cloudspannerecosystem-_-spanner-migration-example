@@ -35,4 +35,4 @@ services:
     - PGADAPTER_PORT=5432
     volumes:
     - $HOME/.config/gcloud/application_default_credentials.json:/credentials.json:ro
-    command: [ "java", "-jar", "app.jar", "spanner" ]
+    command: [ "./wait-for-it.sh", "${PGADAPTER_HOST}:${PGADAPTER_PORT}", "--", "java", "-jar", "app.jar", "spanner" ]
