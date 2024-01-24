@@ -9,6 +9,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import javax.sql.DataSource;
@@ -26,6 +27,15 @@ public class Dao {
   public Dao(DatabaseChoice databaseChoice, DataSource dataSource) {
     this.databaseChoice = databaseChoice;
     this.dataSource = dataSource;
+  }
+
+  public void ddlUpdate(String ddl) throws SQLException {
+    try (Connection connection = dataSource.getConnection();
+        Statement statement = connection.createStatement()) {
+
+      statement.executeUpdate(ddl);
+
+    }
   }
 
   /**

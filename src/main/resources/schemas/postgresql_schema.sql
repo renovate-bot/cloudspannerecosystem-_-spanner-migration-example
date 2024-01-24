@@ -1,11 +1,7 @@
-DROP TABLE IF EXISTS songs;
-DROP TABLE IF EXISTS albums;
-DROP TABLE IF EXISTS singers;
-
 -- When converting to Spanner:
 --   * Table does not contain a primary key column, one must be added
 --   * SERIAL type does not exist in Spanner
-CREATE TABLE singers (
+CREATE TABLE IF NOT EXISTS singers (
   singer_id   SERIAL UNIQUE,
   first_name  VARCHAR(1024),
   last_name   VARCHAR(1024)
@@ -16,7 +12,7 @@ CREATE TABLE singers (
 --   * SERIAL type does not exist in Spanner
 --   * album_title UNIQUE must be converted to an UNIQUE index in Spanner
 --   * FOREIGN KEY relation can be converted to Spanner INTERLEAVED table
-CREATE TABLE albums (
+CREATE TABLE IF NOT EXISTS albums (
   singer_id     int,
   album_id      SERIAL,
   album_title   VARCHAR UNIQUE,
@@ -30,7 +26,7 @@ CREATE TABLE albums (
 --   * SERIAL type does not exist in Spanner
 --   * song_data json type must be converted to jsonb in Spanner
 --   * FOREIGN KEY relation can be converted to Spanner INTERLEAVED table
-CREATE TABLE songs (
+CREATE TABLE IF NOT EXISTS songs (
   singer_id     int,
   album_id      int,
   song_id       SERIAL,
@@ -44,4 +40,4 @@ CREATE TABLE songs (
 
 -- When converting to Spanner:
 --   * Duplicated index, already taken care of by songs primary key
-CREATE INDEX singer_album_song ON songs(singer_id, album_id);
+CREATE INDEX IF NOT EXISTS singer_album_song ON songs(singer_id, album_id);
