@@ -131,7 +131,6 @@ SPANNER_DATABASE=<spanner database-id>
 You can then start the application as follows:
 
 ```shell
-docker-compose up -d pgadapter
 docker-compose up app-spanner
 ```
 You can stop the application like so:
