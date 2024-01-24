@@ -95,7 +95,7 @@ CREATE TABLE songs (
 
 First set up a CloudSQL PostgreSQL [instance](https://cloud.google.com/sql/docs/postgres/create-instance), [database](https://cloud.google.com/sql/docs/postgres/create-manage-databases) and [user](https://cloud.google.com/sql/docs/postgres/create-manage-users).
 
-Next copy the `env.cloudsql.sample` into a `.env.cloudsql` file. This will be used by `docker-compose`. In the copied file configure the following information:
+Next copy the `env.sample` into a `.env` file. This will be used by `docker-compose`. In the copied file configure the following information:
 
 ```shell
 CLOUDSQL_INSTANCE_CONNECTION_NAME=<cloudsql instance connection name>
@@ -120,7 +120,7 @@ docker-compose down app-cloudsql
 
 First set up a Spanner [instance](https://cloud.google.com/spanner/docs/create-query-database-console#create-instance) and [PostgreSQL database](https://cloud.google.com/spanner/docs/create-query-database-console#create-database) (don't forget to select the PostgreSQL database dialect).
 
-Next copy the `env.spanner.sample` into a `.env.spanner` file. This will be used by `docker-compose`. In the copied file configure the following information:
+Next copy the `env.sample` into a `.env` file. This will be used by `docker-compose`. In the copied file configure the following information:
 
 ```shell
 SPANNER_PROJECT=<gcp project-id>
@@ -131,7 +131,6 @@ SPANNER_DATABASE=<spanner database-id>
 You can then start the application as follows:
 
 ```shell
-# Starts the application connecting to Spanner PostgreSQL
 docker-compose up -d pgadapter
 docker-compose up app-spanner
 ```

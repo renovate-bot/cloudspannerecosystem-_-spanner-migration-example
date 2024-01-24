@@ -3,36 +3,34 @@ version: '3'
 services:
   pgadapter:
     image: gcr.io/cloud-spanner-pg-adapter/pgadapter
+    ports:
+    - "${PGADAPTER_PORT}:${PGADAPTER_PORT}"
     env_file:
     - .env
-    ports:
-    - "5432:5432"
     volumes:
     - $HOME/.config/gcloud/application_default_credentials.json:/credentials.json:ro
     command: [ "/bin/bash", "/home/pgadapter/startup.sh", "-p", "${SPANNER_PROJECT}", "-i", "${SPANNER_INSTANCE}", "-d", "${SPANNER_DATABASE}", "-c", "/credentials.json", "-x" ]
-  cloudsql-app:
+  app-cloudsql:
     build:
       context: .
-    image: cloudsql
+    image: app-cloudsql
     env_file:
-    - .env.cloudsql
+    - .env
     environment:
     - GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
     volumes:
     - $HOME/.config/gcloud/application_default_credentials.json:/credentials.json:ro
     command: [ "java", "-jar", "app.jar", "cloudsql" ]
-  spanner-app:
+  app-spanner:
     build:
       context: .
-    image: spanner
+    image: app-spanner
     depends_on:
     - pgadapter
     env_file:
-    - .env.spanner
+    - .env
     environment:
     - GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
-    - PGADAPTER_HOST=pgadapter
-    - PGADAPTER_PORT=5432
     volumes:
     - $HOME/.config/gcloud/application_default_credentials.json:/credentials.json:ro
     command: [ "./wait-for-it.sh", "${PGADAPTER_HOST}:${PGADAPTER_PORT}", "--", "java", "-jar", "app.jar", "spanner" ]
