@@ -15,7 +15,7 @@ services:
       context: .
     image: cloudsql
     env_file:
-    - .env
+    - .env.cloudsql
     environment:
     - GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
     volumes:
@@ -28,7 +28,7 @@ services:
     depends_on:
     - pgadapter
     env_file:
-    - .env
+    - .env.spanner
     environment:
     - GOOGLE_APPLICATION_CREDENTIALS=/credentials.json
     - PGADAPTER_HOST=pgadapter

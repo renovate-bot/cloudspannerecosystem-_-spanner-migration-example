@@ -1,3 +1,5 @@
 .idea
 target/
 .env
+.env.cloudsql
+.env.spanner
