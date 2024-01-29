@@ -1,3 +1,7 @@
+-- WARNING:
+-- Ideally you should also set the SKIP RANGE of the following sequences not to
+-- conflict with existing SERIAL values from the PostgreSQL database.
+
 CREATE SEQUENCE singer_id_seq BIT_REVERSED_POSITIVE;
 ALTER TABLE singers ALTER COLUMN singer_id SET DEFAULT nextval('singer_id_seq'::text);
 
