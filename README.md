@@ -114,13 +114,13 @@ Secondly, we proceeded to set up a Spanner connection. In order to keep using th
 services:
   ...
   pgadapter:
-    image: gcr.io/cloud-spanner-pg-adapter/pgadapter
+    image: gcr.io/cloud-spanner-pg-adapter/pgadapter-distroless
     ...
     
   app-spanner:
     depends_on:
       - pgadapter
-    command: [ "./wait-for-it.sh", "${PGADAPTER_HOST}:${PGADAPTER_PORT}", "--", "java", "-jar", "app.jar", "spanner" ]
+    command: [ "java", "-jar", "app.jar", "spanner" ]
     ...
 ```
 
