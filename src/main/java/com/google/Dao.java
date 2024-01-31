@@ -40,7 +40,7 @@ public class Dao {
   private final DatabaseChoice databaseChoice;
   private final DataSource dataSource;
 
-  public Dao(final DatabaseChoice databaseChoice, final DataSource dataSource) {
+  public Dao(DatabaseChoice databaseChoice, DataSource dataSource) {
     this.databaseChoice = databaseChoice;
     this.dataSource = dataSource;
   }
@@ -62,7 +62,7 @@ public class Dao {
    * @return the inserted singer.
    * @throws SQLException if an error occurred when inserting any of the rows.
    */
-  public Singer insert(final Singer singer) throws SQLException {
+  public Singer insert(Singer singer) throws SQLException {
     try (Connection connection = dataSource.getConnection()) {
       connection.setAutoCommit(false);
 
@@ -94,7 +94,7 @@ public class Dao {
     }
   }
 
-  private long insertSinger(Connection connection, final Singer singer) throws SQLException {
+  private long insertSinger(Connection connection, Singer singer) throws SQLException {
     try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SINGER_QUERY)) {
       preparedStatement.setString(1, singer.getFirstName());
       preparedStatement.setString(2, singer.getLastName());
@@ -109,7 +109,7 @@ public class Dao {
     }
   }
 
-  public long insertAlbum(Connection connection, long singerId, final Album album)
+  public long insertAlbum(Connection connection, long singerId, Album album)
       throws SQLException {
     try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ALBUM_QUERY)) {
       preparedStatement.setLong(1, singerId);
@@ -125,7 +125,7 @@ public class Dao {
     }
   }
 
-  public long insertSong(Connection connection, long singerId, long albumId, final Song song)
+  public long insertSong(Connection connection, long singerId, long albumId, Song song)
       throws SQLException {
     try (PreparedStatement preparedStatement = connection.prepareStatement(
         databaseChoice == SPANNER ? SPANNER_INSERT_SONG_QUERY : CLOUDSQL_INSERT_SONG_QUERY)) {

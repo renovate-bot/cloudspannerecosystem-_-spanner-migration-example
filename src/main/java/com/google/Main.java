@@ -26,6 +26,8 @@ import javax.sql.DataSource;
 
 public class Main {
 
+  private Main() {}
+
   public static void main(String[] args) throws SQLException {
     DatabaseChoice databaseChoice = parseDatabaseChoice(args);
     DataSource dataSource = dataSourceFrom(databaseChoice);
@@ -47,7 +49,7 @@ public class Main {
     return DatabaseChoice.valueOf(args[0].toUpperCase());
   }
 
-  private static DataSource dataSourceFrom(DatabaseChoice databaseChoice) {
+  private static DataSource dataSourceFrom(final DatabaseChoice databaseChoice) {
     switch (databaseChoice) {
       case CLOUDSQL:
         return CloudSQLDataSource.createConnectionPool();

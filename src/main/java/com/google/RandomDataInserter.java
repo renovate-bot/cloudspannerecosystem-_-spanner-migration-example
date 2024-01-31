@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-public final class RandomDataInserter {
+public class RandomDataInserter {
 
   private static final int INTERVAL_MILLIS = 5000;
   private static final int MAX_ALBUMS_PER_SINGER = 4;
@@ -33,7 +33,7 @@ public final class RandomDataInserter {
   private final Dao dao;
   private final Random random;
 
-  public RandomDataInserter(final Dao dao) {
+  public RandomDataInserter(Dao dao) {
     this.dao = dao;
     this.random = new Random();
   }

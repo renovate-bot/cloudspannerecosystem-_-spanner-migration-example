@@ -86,41 +86,21 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-checkstyle-plugin</artifactId>
         <version>3.3.1</version>
-        <configuration>
-          <consoleOutput>true</consoleOutput>
-          <failsOnError>true</failsOnError>
-          <failOnViolation>true</failOnViolation>
-          <linkXRef>false</linkXRef>
-          <excludeGeneratedSources>true</excludeGeneratedSources>
-          <violationSeverity>warning</violationSeverity>
-        </configuration>
         <executions>
           <execution>
-            <id>google-checkstyle</id>
+            <id>checkstyle</id>
+            <phase>validate</phase>
             <goals>
               <goal>check</goal>
             </goals>
             <configuration>
-              <configLocation>google_checks.xml</configLocation>
-            </configuration>
-          </execution>
-          <execution>
-            <id>licence-header</id>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <configuration>
-              <checkstyleRules>
-                <module name="Checker">
-                  <module name="Header">
-                    <property name="headerFile" value="licence_header.java"></property>
-                    <property name="ignoreLines" value="2"></property>
-                    <property name="fileExtensions" value="java"></property>
-                    <message key="header.mismatch" value="File must start with the Apache2 licence header (see licence_header.java)."></message>
-                    <message key="header.missing" value="File must start with the Apache2 licence header (see licence_header.java)."></message>
-                  </module>
-                </module>
-              </checkstyleRules>
+              <headerLocation>java.header</headerLocation>
+              <configLocation>license-checks.xml</configLocation>
+              <consoleOutput>true</consoleOutput>
+              <failOnViolation>true</failOnViolation>
+              <violationSeverity>error</violationSeverity>
+              <failsOnError>true</failsOnError>
+              <includeTestSourceDirectory>true</includeTestSourceDirectory>
             </configuration>
           </execution>
         </executions>
