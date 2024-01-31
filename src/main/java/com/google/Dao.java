@@ -1,3 +1,19 @@
+/*
+ * Copyright 2024 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google;
 
 import static com.google.DatabaseChoice.SPANNER;
@@ -24,7 +40,7 @@ public class Dao {
   private final DatabaseChoice databaseChoice;
   private final DataSource dataSource;
 
-  public Dao(DatabaseChoice databaseChoice, DataSource dataSource) {
+  public Dao(final DatabaseChoice databaseChoice, final DataSource dataSource) {
     this.databaseChoice = databaseChoice;
     this.dataSource = dataSource;
   }
@@ -39,14 +55,14 @@ public class Dao {
   }
 
   /**
-   * Inserts a singer, all of its albums and songs within a single transaction.
-   * Returns a copy of the inserted singer, albums and songs with ids populated.
+   * Inserts a singer, all of its albums and songs within a single transaction. Returns a copy of
+   * the inserted singer, albums and songs with ids populated.
    *
    * @param singer the singer to be inserted. Ids will be ignored as these are generated.
    * @return the inserted singer.
    * @throws SQLException if an error occurred when inserting any of the rows.
    */
-  public Singer insert(Singer singer) throws SQLException {
+  public Singer insert(final Singer singer) throws SQLException {
     try (Connection connection = dataSource.getConnection()) {
       connection.setAutoCommit(false);
 
@@ -78,7 +94,7 @@ public class Dao {
     }
   }
 
-  private long insertSinger(Connection connection, Singer singer) throws SQLException {
+  private long insertSinger(Connection connection, final Singer singer) throws SQLException {
     try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_SINGER_QUERY)) {
       preparedStatement.setString(1, singer.getFirstName());
       preparedStatement.setString(2, singer.getLastName());
@@ -93,7 +109,8 @@ public class Dao {
     }
   }
 
-  public long insertAlbum(Connection connection, long singerId, Album album) throws SQLException {
+  public long insertAlbum(Connection connection, long singerId, final Album album)
+      throws SQLException {
     try (PreparedStatement preparedStatement = connection.prepareStatement(INSERT_ALBUM_QUERY)) {
       preparedStatement.setLong(1, singerId);
       preparedStatement.setString(2, album.getAlbumTitle());
@@ -108,7 +125,7 @@ public class Dao {
     }
   }
 
-  public long insertSong(Connection connection, long singerId, long albumId, Song song)
+  public long insertSong(Connection connection, long singerId, long albumId, final Song song)
       throws SQLException {
     try (PreparedStatement preparedStatement = connection.prepareStatement(
         databaseChoice == SPANNER ? SPANNER_INSERT_SONG_QUERY : CLOUDSQL_INSERT_SONG_QUERY)) {
